@@ -239,6 +239,7 @@ mod tests {
             // This will fail at i=39,
             // seed=c5b99f3bd8e9d028f404b6496df4cd717437ce91d6cdf78229715d0e8cc2bfe8
             let sig = Signature::<MlDsa65>::decode(&sig_enc).unwrap();
+            assert!(pub_key.verify(MESSAGE, &sig).is_ok());
         }
     }
 
