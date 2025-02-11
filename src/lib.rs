@@ -2,7 +2,7 @@ use blake3::{hash, Hash};
 use ml_dsa::{
     EncodedSignature, EncodedVerifyingKey, KeyGen, KeyPair, MlDsa65, Signature, VerifyingKey, B32,
 };
-use signature::{Signer, Verifier};
+use signature::{Signer, Verifier, Keypair};
 
 #[cfg(test)]
 mod tests {
@@ -26,18 +26,18 @@ mod tests {
         for i in 0..420 {
             seed = hash(seed.as_bytes());
             let kp = gen_keypair(&seed);
-            let sig = kp.signing_key.sign(MESSAGE);
-            assert!(kp.verifying_key.verify(MESSAGE, &sig).is_ok());
+            let sig = kp.signing_key().sign(MESSAGE);
+            assert!(kp.verifying_key().verify(MESSAGE, &sig).is_ok());
             if i == 39 {
                 assert_eq!(
-                    hash(kp.signing_key.encode().as_slice()),
+                    hash(kp.signing_key().encode().as_slice()),
                     Hash::from_hex(
                         "dfeb0ddc4a2d932777f73c71e62ef03bdc4a9bc343f6cb3d212671d72aeec81d"
                     )
                     .unwrap()
                 );
                 assert_eq!(
-                    hash(kp.verifying_key.encode().as_slice()),
+                    hash(kp.verifying_key().encode().as_slice()),
                     Hash::from_hex(
                         "f0945e7a6b0c66a91078a2d5d2ed5b56872be70a5eec779dd14c396a239c0be2"
                     )
@@ -53,7 +53,7 @@ mod tests {
             }
 
             let mut pub_buf = [0; 1952];
-            pub_buf.copy_from_slice(kp.verifying_key.encode().as_slice());
+            pub_buf.copy_from_slice(kp.verifying_key().encode().as_slice());
             let mut sig_buf = [0; 3309];
             sig_buf.copy_from_slice(sig.encode().as_slice());
             println!("{} {}", i, seed);
@@ -71,7 +71,7 @@ mod tests {
     fn it_works_not() {
         let seed = Hash::from_hex(BAD).unwrap();
         let kp = gen_keypair(&seed);
-        let sig = kp.signing_key.sign(MESSAGE);
+        let sig = kp.signing_key().sign(MESSAGE);
         let mut sig_buf = [0; 3309];
         sig_buf.copy_from_slice(sig.encode().as_slice());
         let sig_enc = EncodedSignature::<MlDsa65>::try_from(&sig_buf[..]).unwrap();
@@ -80,11 +80,9 @@ mod tests {
 
     #[test]
     fn it_works() {
-        let seed =
-            Hash::from_hex("d93551f9e2b3aa1b7822f8c17b04ab62062f6d70aa340584f0cebcf444ae25d1")
-                .unwrap();
+        let seed = Hash::from_hex(GOOD).unwrap();
         let kp = gen_keypair(&seed);
-        let sig = kp.signing_key.sign(MESSAGE);
+        let sig = kp.signing_key().sign(MESSAGE);
         let mut sig_buf = [0; 3309];
         sig_buf.copy_from_slice(sig.encode().as_slice());
         let sig_enc = EncodedSignature::<MlDsa65>::try_from(&sig_buf[..]).unwrap();
