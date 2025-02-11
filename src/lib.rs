@@ -1,3 +1,5 @@
+//! Demonstates signature encode/decode round trip problem in ml_dsa
+
 use blake3::{hash, Hash};
 use ml_dsa::{
     EncodedSignature, EncodedVerifyingKey, KeyGen, KeyPair, MlDsa65, Signature, VerifyingKey, B32,
@@ -12,7 +14,7 @@ mod tests {
     static GOOD: &str = "155f27eac999045cd27dc51dd07a7787fc3655493710ebfc0e45767aa3ae86de";
     static BAD: &str = "c5b99f3bd8e9d028f404b6496df4cd717437ce91d6cdf78229715d0e8cc2bfe8";
 
-    // This is a valid signature value that wont round trip:
+    // This is a valid signature value that wont round trip through encode+decode:
     static BAD_SIG: [u8; 3309] = [
         165, 92, 173, 164, 83, 0, 171, 150, 97, 70, 59, 170, 59, 184, 184, 89, 114, 68, 209, 131,
         195, 100, 38, 208, 243, 240, 114, 93, 52, 99, 106, 62, 3, 178, 73, 134, 180, 44, 161, 43,
@@ -190,8 +192,6 @@ mod tests {
         MlDsa65::key_gen_internal(&hack)
     }
 
-    fn roundtrip_sig(sig: Signature<MlDsa65>) {}
-
     #[test]
     fn it_works_not_finder() {
         let mut seed = Hash::from_bytes([69; 32]);
@@ -201,6 +201,7 @@ mod tests {
             let sig = kp.signing_key().sign(MESSAGE);
             assert!(kp.verifying_key().verify(MESSAGE, &sig).is_ok());
             if i == 39 {
+                assert_eq!(seed, Hash::from_hex(BAD).unwrap());
                 assert_eq!(
                     hash(kp.signing_key().encode().as_slice()),
                     Hash::from_hex(
@@ -222,6 +223,7 @@ mod tests {
                     )
                     .unwrap()
                 );
+                assert_eq!(sig.encode().as_slice(), BAD_SIG);
             }
 
             let mut pub_buf = [0; 1952];
@@ -244,7 +246,7 @@ mod tests {
         let seed = Hash::from_hex(BAD).unwrap();
         let kp = gen_keypair(&seed);
         let sig = kp.signing_key().sign(MESSAGE);
-        assert_ne!(sig.encode().as_slice(), BAD_SIG);
+        assert_eq!(sig.encode().as_slice(), BAD_SIG);
         let mut sig_buf = [0; 3309];
         sig_buf.copy_from_slice(sig.encode().as_slice());
         let sig_enc = EncodedSignature::<MlDsa65>::try_from(&sig_buf[..]).unwrap();
