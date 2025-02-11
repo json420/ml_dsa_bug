@@ -47,7 +47,7 @@ mod tests {
             pub_buf.copy_from_slice(kp.verifying_key.encode().as_slice());
             let mut sig_buf = [0; 3309];
             sig_buf.copy_from_slice(sig.encode().as_slice());
-            println!("{}", i);
+            println!("{} {}", i, seed);
             let pub_enc = EncodedVerifyingKey::<MlDsa65>::try_from(&pub_buf[..]).unwrap();
             let pub_key = VerifyingKey::<MlDsa65>::decode(&pub_enc);
             let sig_enc = EncodedSignature::<MlDsa65>::try_from(&sig_buf[..]).unwrap();
