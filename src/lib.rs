@@ -1,11 +1,11 @@
 //! Demonstates signature encode/decode round trip problem in ml_dsa
 
-
 #[cfg(test)]
-    mod tests {
+mod tests {
     use blake3::{hash, Hash};
     use ml_dsa::{
-        EncodedSignature, EncodedVerifyingKey, KeyGen, KeyPair, MlDsa65, Signature, VerifyingKey, B32,
+        EncodedSignature, EncodedVerifyingKey, KeyGen, KeyPair, MlDsa65, Signature, VerifyingKey,
+        B32,
     };
     use signature::{Keypair, Signer, Verifier};
 
