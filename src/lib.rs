@@ -1,17 +1,18 @@
 //! Demonstates signature encode/decode round trip problem in ml_dsa
 
-use blake3::{hash, Hash};
-use ml_dsa::{
-    EncodedSignature, EncodedVerifyingKey, KeyGen, KeyPair, MlDsa65, Signature, VerifyingKey, B32,
-};
-use signature::{Keypair, Signer, Verifier};
 
 #[cfg(test)]
-mod tests {
-    use super::*;
+    mod tests {
+    use blake3::{hash, Hash};
+    use ml_dsa::{
+        EncodedSignature, EncodedVerifyingKey, KeyGen, KeyPair, MlDsa65, Signature, VerifyingKey, B32,
+    };
+    use signature::{Keypair, Signer, Verifier};
 
     static MESSAGE: &[u8] = b"There seems to be a round tripping issue somewhere in here";
+    // Hex encoded seed that produces a signature that round-trips fine
     static GOOD: &str = "155f27eac999045cd27dc51dd07a7787fc3655493710ebfc0e45767aa3ae86de";
+    // Hex encoded seed that produces a signature that does NOT round-trip successfully
     static BAD: &str = "c5b99f3bd8e9d028f404b6496df4cd717437ce91d6cdf78229715d0e8cc2bfe8";
 
     // This is a valid signature value that wont round trip through encode+decode:
@@ -250,13 +251,13 @@ mod tests {
         let mut sig_buf = [0; 3309];
         sig_buf.copy_from_slice(sig.encode().as_slice());
         let sig_enc = EncodedSignature::<MlDsa65>::try_from(&sig_buf[..]).unwrap();
-        let sig = Signature::<MlDsa65>::decode(&sig_enc).unwrap();
+        let _sig = Signature::<MlDsa65>::decode(&sig_enc).unwrap();
     }
 
     #[test]
     fn it_works_not_with_this_sig() {
         let sig_enc = EncodedSignature::<MlDsa65>::try_from(BAD_SIG).unwrap();
-        let sig = Signature::<MlDsa65>::decode(&sig_enc).unwrap();
+        let _sig = Signature::<MlDsa65>::decode(&sig_enc).unwrap();
     }
 
     #[test]
@@ -267,6 +268,6 @@ mod tests {
         let mut sig_buf = [0; 3309];
         sig_buf.copy_from_slice(sig.encode().as_slice());
         let sig_enc = EncodedSignature::<MlDsa65>::try_from(&sig_buf[..]).unwrap();
-        let sig = Signature::<MlDsa65>::decode(&sig_enc).unwrap();
+        let _sig = Signature::<MlDsa65>::decode(&sig_enc).unwrap();
     }
 }
