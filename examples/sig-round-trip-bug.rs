@@ -14,9 +14,6 @@ fn main() {
     seed.0.copy_from_slice(&SEED);
     let kp = MlDsa65::key_gen_internal(&seed);
     let sig = kp.signing_key().sign(MESSAGE);
-
-    let mut sig_buf = [0; 3309];
-    sig_buf.copy_from_slice(sig.encode().as_slice());
-    let sig_enc = EncodedSignature::<MlDsa65>::try_from(&sig_buf[..]).unwrap();
+    let sig_enc = sig.encode();
     let _sig = Signature::<MlDsa65>::decode(&sig_enc).unwrap(); // This will fail
 }
