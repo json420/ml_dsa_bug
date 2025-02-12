@@ -1,6 +1,6 @@
 // Minimal demonstration of a valid signature that wont round-trip through encode/decode.
 
-use ml_dsa::{EncodedSignature, KeyGen, MlDsa65, Signature, B32};
+use ml_dsa::{KeyGen, MlDsa65, Signature, B32};
 use signature::Signer;
 
 static SEED: [u8; 32] = [
