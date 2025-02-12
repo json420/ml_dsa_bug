@@ -3,9 +3,10 @@
 #[cfg(test)]
 mod tests {
     use blake3::{hash, Hash};
+    use hybrid_array::Array;
     use ml_dsa::{
-        EncodedSignature, EncodedVerifyingKey, KeyGen, KeyPair, MlDsa65, Signature, VerifyingKey,
-        B32,
+        EncodedSignature, EncodedVerifyingKey, KeyGen, KeyPair, MlDsa65, MlDsa87, Signature,
+        VerifyingKey, B32,
     };
     use signature::{Keypair, Signer, Verifier};
 
@@ -448,5 +449,27 @@ mod tests {
         sig_buf.copy_from_slice(sig.encode().as_slice());
         let sig_enc = EncodedSignature::<MlDsa65>::try_from(&sig_buf[..]).unwrap();
         let _sig = Signature::<MlDsa65>::decode(&sig_enc).unwrap();
+    }
+
+    #[test]
+    fn bad_seed() {
+        const BAD_SEED: &[u8] = &[
+            223, 116, 86, 28, 89, 196, 31, 159, 108, 178, 58, 1, 14, 198, 242, 131, 243, 77, 188,
+            21, 25, 108, 151, 27, 232, 208, 147, 229, 245, 113, 178, 114,
+        ];
+
+        let seed = B32::try_from(BAD_SEED).unwrap();
+
+        let kp = MlDsa87::key_gen_internal(&seed);
+        let sk = kp.signing_key();
+        let vk = kp.verifying_key();
+
+        let M = b"Hello world";
+        let rnd = Array([0u8; 32]);
+        let sig = sk.sign_internal(&[M], &rnd);
+
+        let sig_enc = sig.encode();
+        let sig_dec = Signature::<MlDsa87>::decode(&sig_enc).unwrap();
+        let _ver = vk.verify_internal(&[M], &sig); // <-- this will panic
     }
 }

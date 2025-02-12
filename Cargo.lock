@@ -167,6 +167,7 @@ name = "ml_dsa_bug"
 version = "0.1.0"
 dependencies = [
  "blake3",
+ "hybrid-array",
  "ml-dsa",
  "signature",
 ]
