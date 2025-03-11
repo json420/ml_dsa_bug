@@ -5,9 +5,8 @@ edition = "2021"
 
 [dependencies]
 blake3 = "1.5.5"
-ml-dsa = { git = "https://github.com/bifurcation/signatures.git", version = "0.1.0-pre.0", branch = "encode-decode-bug" }
-signature = "2.3.0-pre.4"
-hybrid-array = { version = "0.2.3", features = ["extra-sizes"] }
+ml-dsa = { git = "https://github.com/RustCrypto/signatures.git", version = "0.1.0-pre.2" }
+hybrid-array = { version = "0.3.0", features = ["extra-sizes"] }
 
 [profile.dev]
 opt-level = 2

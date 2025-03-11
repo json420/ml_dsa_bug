@@ -1,8 +1,8 @@
 // Minimal demonstration of a valid signature that wont round-trip through encode/decode.
 
 use blake3::{hash, Hash};
+use ml_dsa::signature::{Keypair, Signer, Verifier};
 use ml_dsa::{KeyGen, MlDsa65, Signature, B32};
-use signature::Signer;
 
 const COUNT: usize = 10_000_000;
 static MESSAGE: &[u8] = b"There seems to be a round tripping issue somewhere in here";

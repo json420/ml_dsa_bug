@@ -4,11 +4,11 @@
 mod tests {
     use blake3::{hash, Hash};
     use hybrid_array::Array;
+    use ml_dsa::signature::{Keypair, Signer, Verifier};
     use ml_dsa::{
         EncodedSignature, EncodedVerifyingKey, KeyGen, KeyPair, MlDsa65, MlDsa87, Signature,
         VerifyingKey, B32,
     };
-    use signature::{Keypair, Signer, Verifier};
 
     static MESSAGE: &[u8] = b"There seems to be a round tripping issue somewhere in here";
     // Hex encoded seed that produces a signature that round-trips fine

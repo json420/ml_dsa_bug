@@ -1,7 +1,7 @@
 // Minimal demonstration of a valid signature that wont round-trip through encode/decode.
 
+use ml_dsa::signature::{Keypair, Signer, Verifier};
 use ml_dsa::{KeyGen, MlDsa65, Signature, B32};
-use signature::Signer;
 
 static SEED: [u8; 32] = [
     197, 185, 159, 59, 216, 233, 208, 40, 244, 4, 182, 73, 109, 244, 205, 113, 116, 55, 206, 145,
