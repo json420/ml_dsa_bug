@@ -5,8 +5,10 @@ edition = "2021"
 
 [dependencies]
 blake3 = "1.5.5"
-ml-dsa = { git = "https://github.com/RustCrypto/signatures.git", version = "0.1.0-pre.2" }
+ml-dsa = { git = "https://github.com/dignifiedquire/signatures.git", version = "0.1.0-pre.2", branch = "feat-stable" }
 hybrid-array = { version = "0.3.0", features = ["extra-sizes"] }
+slh-dsa = { git = "https://github.com/dignifiedquire/signatures.git", branch = "feat-stable", version = "0.2.0-pre" }
+ed25519-dalek = "2.1.1"
 
 [profile.dev]
 opt-level = 2
